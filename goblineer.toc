@@ -1,0 +1,10 @@
+## Interface: 70300
+## Title: |cFF3a8df4Goblineer
+## Author: Petrosz
+## Notes: Price tooltips from Goblineer!
+## DefaultState: enabled
+## SavedVariables: Goblineer
+
+json.lua
+data.lua
+main.lua
