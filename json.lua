@@ -377,5 +377,4 @@ function json.decode(str)
 end
 
 _G.json = json
---print("Loaded json.lua")
 return json

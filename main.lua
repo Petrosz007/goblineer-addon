@@ -9,9 +9,7 @@ function tablelength(T)
 local lineAdded = false
 local function OnTooltipSetItem(tooltip, ...)
 	if not lineAdded then
-		--tooltip:AddLine("Hello World!")
 		local name = tooltip:GetItem()
-        --tooltip:AddLine(name)
         
         for i = 1,tablelength(formatted),1 
         do 
@@ -40,9 +38,7 @@ local function OnTooltipSetItem(tooltip, ...)
 
                 tooltip:AddLine("   ")
                 tooltip:AddLine("Goblineer data:", 58/255, 141/255, 244/255, true)
-                --tooltip:AddDoubleLine("     Min Price", string.format("%.2f", formatted[i]["MIN"]), 0, 1, 1,     255/255, 215/255, 0/255)
                 tooltip:AddDoubleLine("     Min Price", min_gold .. "." .. min_silver, 0, 1, 1)
-                --tooltip:AddDoubleLine("     Marketvalue", string.format("%.2f", formatted[i]["marketvalue"]), 0, 1, 1,     255/255, 215/255, 0/255)
                 tooltip:AddDoubleLine("     Marketvalue", mv_gold .. "." .. mv_silver, 0, 1, 1)
                 tooltip:AddDoubleLine("     Quantity", formatted[i]["quantity"], 0, 1, 1,     255/255, 215/255, 0/255)
                 tooltip:AddLine("   ")
@@ -59,5 +55,3 @@ end
  
 GameTooltip:HookScript("OnTooltipSetItem", OnTooltipSetItem)
 GameTooltip:HookScript("OnTooltipCleared", OnTooltipCleared)
-
---print('Loaded main.lua')
