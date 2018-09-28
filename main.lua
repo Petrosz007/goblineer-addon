@@ -1,3 +1,7 @@
+if string.find(goblineer_data, "bonusIds") == nil then
+    ChatFrame1:AddMessage("[Goblineer]: Your updater app is out of date, please download the latest version of the \"Goblineer-updater\" from https://github.com/Petrosz007/goblineer-updater/releases")
+end
+
 local formatted = json.decode("[" .. goblineer_data .. "]")
 
 function tablelength(T)
