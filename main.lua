@@ -80,7 +80,13 @@ end
 local lineAdded = false
 local function OnTooltipSetItem(tooltip, ...)
 	if not lineAdded then
-        local name, itemLink = tooltip:GetItem()
+        local _, itemLink = tooltip:GetItem()
+
+        -- GetItem() can return nil, i.e. for recipe tooltips
+        if not itemLink then
+            lineAdded = true
+            return
+        end
 
         --gets the item ID and bonus IDs of the item
         local _, itemID, enchantID, gemID1, gemID2, gemID3, gemID4, 
