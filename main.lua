@@ -3,6 +3,7 @@ if string.find(goblineer_data, "bonusIds") == nil then
 end
 
 local formatted = json.decode("[" .. goblineer_data .. "]")
+local cache = {}
 
 function tablelength(T)
     local count = 0
@@ -10,15 +11,15 @@ function tablelength(T)
     return count
   end
 
-local function write_tooltip(tooltip, i)
+local function write_tooltip(tooltip, item)
     local itemCount = goblineer_itemCount 
 
     if(IsShiftKeyDown() and itemCount ~= nil) then
-        goblineer_minPrice = tonumber(formatted[i]["MIN"]) * itemCount
-        goblineer_mvPrice = tonumber(formatted[i]["marketvalue"]) * itemCount
+        goblineer_minPrice = tonumber(item["MIN"]) * itemCount
+        goblineer_mvPrice = tonumber(item["marketvalue"]) * itemCount
     else 
-        goblineer_minPrice = tonumber(formatted[i]["MIN"])
-        goblineer_mvPrice = tonumber(formatted[i]["marketvalue"])                    
+        goblineer_minPrice = tonumber(item["MIN"])
+        goblineer_mvPrice = tonumber(item["marketvalue"])                    
     end
 
     local min_split = {}
@@ -55,7 +56,7 @@ local function write_tooltip(tooltip, i)
         tooltip:AddDoubleLine("     Marketvalue", mv_gold .. "." .. mv_silver, 0, 1, 1)
     end
 
-    tooltip:AddDoubleLine("     Quantity", formatted[i]["quantity"], 0, 1, 1,     255/255, 215/255, 0/255)
+    tooltip:AddDoubleLine("     Quantity", item["quantity"], 0, 1, 1,     255/255, 215/255, 0/255)
     tooltip:AddLine("   ")
 end
 
@@ -74,6 +75,30 @@ local function bonusIdsMatch(one, two)
     else
         return false
     end
+end
+
+local function findInCache(itemID)
+    -- Starting from the end, so the latest item will be found first => most of the time the item currently hovered over
+    for i = tablelength(cache), 1, -1 
+    do 
+        if itemID == tostring(cache[i]["item"]) then
+            return i
+        end
+    end
+
+    return 0
+end
+
+local function findInCacheWithBonus(itemID, bonusIDs)
+    -- Starting from the end, so the latest item will be found first => most of the time the item currently hovered over
+    for i = tablelength(cache), 1, -1 
+    do 
+        if itemID == tostring(cache[i]["item"]) and bonusIdsMatch(cache[i]["bonusIds"], bonusIDs) then
+            return i
+        end
+    end
+
+    return 0
 end
 
 
@@ -104,27 +129,52 @@ local function OnTooltipSetItem(tooltip, ...)
                 bonusIDs = {strsplit(":", tempString)}
             end
 
+            
+            local cacheLocation = findInCacheWithBonus(itemID, bonusIDs)
+            if not cacheLocation == 0 then
 
-            for i = 1,tablelength(formatted),1 
-            do 
-                if itemID == tostring(formatted[i]["item"]) and bonusIdsMatch(formatted[i]["bonusIds"], bonusIDs) then
+                write_tooltip(tooltip, cache[cacheLocation])
 
-                    write_tooltip(tooltip, i)
+            else
+                for i = 1,tablelength(formatted),1 
+                do 
+                    if itemID == tostring(formatted[i]["item"]) and bonusIdsMatch(formatted[i]["bonusIds"], bonusIDs) then
 
+                        write_tooltip(tooltip, formatted[i])
+                        table.insert(cache, formatted[i])
+
+                        break
+
+                    end
                 end
             end
 
+            
             lineAdded = true
+            
         else
-            for i = 1,tablelength(formatted),1 
-            do 
-                if itemID == tostring(formatted[i]["item"]) then
-                    write_tooltip(tooltip, i)
+            local cacheLocation = findInCache(itemID)
+            if not cacheLocation == 0 then
+
+                write_tooltip(tooltip, cache[cacheLocation])
+
+            else
+                for i = 1,tablelength(formatted),1 
+                do 
+                    if itemID == tostring(formatted[i]["item"]) then
+
+                        write_tooltip(tooltip, formatted[i])
+                        table.insert(cache, formatted[i])
+
+                        break
+
+                    end
                 end
             end
+
             lineAdded = true
         end
-	end
+    end
 end
 
 
