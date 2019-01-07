@@ -12,6 +12,11 @@ function tablelength(T)
   end
 
 local function write_tooltip(tooltip, item)
+    -- If the item was not found in the marketvalues file, skip writing the tooltip
+    if item["empty"] then
+        return
+    end
+
     local itemCount = goblineer_itemCount 
 
     if(IsShiftKeyDown() and itemCount ~= nil) then
@@ -136,6 +141,7 @@ local function OnTooltipSetItem(tooltip, ...)
                 write_tooltip(tooltip, cache[cacheLocation])
 
             else
+                local found = false
                 for i = 1,tablelength(formatted),1 
                 do 
                     if itemID == tostring(formatted[i]["item"]) and bonusIdsMatch(formatted[i]["bonusIds"], bonusIDs) then
@@ -143,9 +149,18 @@ local function OnTooltipSetItem(tooltip, ...)
                         write_tooltip(tooltip, formatted[i])
                         table.insert(cache, formatted[i])
 
+                        found = true
                         break
 
                     end
+                end
+
+                if not found then
+                    tmp = {}
+                    tmp["item"] = itemID
+                    tmp["bonusIds"] = bonusIDs
+                    tmp["empty"] = true
+                    table.insert(cache, tmp)
                 end
             end
 
@@ -159,6 +174,7 @@ local function OnTooltipSetItem(tooltip, ...)
                 write_tooltip(tooltip, cache[cacheLocation])
 
             else
+                local found = false
                 for i = 1,tablelength(formatted),1 
                 do 
                     if itemID == tostring(formatted[i]["item"]) then
@@ -169,6 +185,14 @@ local function OnTooltipSetItem(tooltip, ...)
                         break
 
                     end
+                end
+
+                if not found then
+                    tmp = {}
+                    tmp["item"] = itemID
+                    tmp["bonusIds"] = bonusIDs
+                    tmp["empty"] = true
+                    table.insert(cache, tmp)
                 end
             end
 
