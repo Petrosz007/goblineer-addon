@@ -6,9 +6,13 @@ local formatted = json.decode("[" .. goblineer_data .. "]")
 local cache = {}
 
 function tablelength(T)
-    local count = 0
-    for _ in pairs(T) do count = count + 1 end
-    return count
+    if T == nil then
+        return 0
+    else
+        local count = 0
+        for _ in pairs(T) do count = count + 1 end
+        return count
+    end
   end
 
 local function write_tooltip(tooltip, item)
