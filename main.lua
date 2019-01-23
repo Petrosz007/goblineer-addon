@@ -130,6 +130,13 @@ local function OnTooltipSetItem(tooltip, ...)
 
         if not (numBonusIDs == "") then 
             local tempString, unknown1, unknown2, unknown3 = strmatch(itemLink, "item:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:[-%d]-:([-:%d]+):([-%d]-):([-%d]-):([-%d]-)|")
+            
+            -- If there is no tempString return (Keystones had itemLinks, but their tempstrings were nil)
+            if not tempString then
+                lineAdded = true
+                return
+            end
+            
             local bonusIDs, upgradeValue
             if upgradeTypeID and upgradeTypeID ~= "" then
                 upgradeValue = tempString:match("[-:%d]+:([-%d]+)")
