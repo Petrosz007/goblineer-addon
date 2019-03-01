@@ -4,6 +4,7 @@ end
 
 local formatted = json.decode("[" .. goblineer_data .. "]")
 local cache = {}
+local cache_empty = {}
 
 function tablelength(T)
     if T == nil then
@@ -86,6 +87,18 @@ local function bonusIdsMatch(one, two)
     end
 end
 
+local function findInCacheEmpty(itemID)
+    -- Starting from the end, so the latest item will be found first => most of the time the item currently hovered over
+    for i = tablelength(cache_empty), 1, -1 
+    do 
+        if itemID == cache_empty[i] then
+            return true
+        end
+    end
+
+    return false
+end
+
 local function findInCache(itemID)
     -- Starting from the end, so the latest item will be found first => most of the time the item currently hovered over
     for i = tablelength(cache), 1, -1 
@@ -122,10 +135,15 @@ local function OnTooltipSetItem(tooltip, ...)
             return
         end
 
+        
         --gets the item ID and bonus IDs of the item
         local _, itemID, enchantID, gemID1, gemID2, gemID3, gemID4, 
         suffixID, uniqueID, linkLevel, specializationID, upgradeTypeID, instanceDifficultyID, numBonusIDs = strsplit(":", itemLink)
-
+        
+        if findInCacheEmpty(itemID) then
+            lineAdded = true
+            return
+        end
         
 
         if not (numBonusIDs == "") then 
@@ -172,6 +190,7 @@ local function OnTooltipSetItem(tooltip, ...)
                     tmp["bonusIds"] = bonusIDs
                     tmp["empty"] = true
                     table.insert(cache, tmp)
+                    table.insert(cache_empty, itemID)
                 end
             end
 
@@ -204,6 +223,7 @@ local function OnTooltipSetItem(tooltip, ...)
                     tmp["bonusIds"] = bonusIDs
                     tmp["empty"] = true
                     table.insert(cache, tmp)
+                    table.insert(cache_empty, itemID)
                 end
             end
 
