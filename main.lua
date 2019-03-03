@@ -165,7 +165,7 @@ local function OnTooltipSetItem(tooltip, ...)
 
             
             local cacheLocation = findInCacheWithBonus(itemID, bonusIDs)
-            if not cacheLocation == 0 then
+            if not (cacheLocation == 0) then
 
                 write_tooltip(tooltip, cache[cacheLocation])
 
@@ -199,7 +199,7 @@ local function OnTooltipSetItem(tooltip, ...)
             
         else
             local cacheLocation = findInCache(itemID)
-            if not cacheLocation == 0 then
+            if not (cacheLocation == 0) then
 
                 write_tooltip(tooltip, cache[cacheLocation])
 
@@ -211,7 +211,8 @@ local function OnTooltipSetItem(tooltip, ...)
 
                         write_tooltip(tooltip, formatted[i])
                         table.insert(cache, formatted[i])
-
+                        
+                        found = true
                         break
 
                     end
