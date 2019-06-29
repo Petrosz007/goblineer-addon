@@ -1,4 +1,4 @@
-## Interface: 80100
+## Interface: 80200
 ## Title: |cFF3a8df4Goblineer
 ## Author: Petrosz
 ## Notes: Price tooltips from Goblineer!
